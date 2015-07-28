@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazy Invitation\n"
 "Report-Msgid-Bugs-To: http://boiteaweb.fr/\n"
-"POT-Creation-Date: 2015-07-25 01:19+0100\n"
-"PO-Revision-Date: 2015-07-25 01:20+0100\n"
+"POT-Creation-Date: 2015-07-28 23:50+0100\n"
+"PO-Revision-Date: 2015-07-28 23:51+0100\n"
 "Last-Translator: Julio Potier <julio@boiteaweb.fr>\n"
 "Language-Team: French (France)\n"
 "Language: fr_FR\n"
@@ -22,15 +22,15 @@ msgstr ""
 "X-Generator: Poedit 1.7.5\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../lazy-invitation.php:25
+#: ../lazy-invitation.php:35
 msgid "<b>ERROR</b> GroupName is not set!"
 msgstr "<b>ERREUR</b> Il manque le nom du groupe !"
 
-#: ../lazy-invitation.php:29
+#: ../lazy-invitation.php:39
 msgid "<b>ERROR</b> Token is not set!"
 msgstr "<b>ERREUR</b> Il manque le jeton d'application !"
 
-#: ../lazy-invitation.php:34
+#: ../lazy-invitation.php:44
 #, php-format
 msgid ""
 "Enter your email address to join the <a href=\"http://%1$s.slack.com\"><b>"
@@ -39,7 +39,7 @@ msgstr ""
 "Entrez votre adresse e-mail pour rejoindre le groupe <a href=\"http://%1$s."
 "slack.com\"><b>%1$s</b></a> sur Slack."
 
-#: ../lazy-invitation.php:52
+#: ../lazy-invitation.php:80
 #, php-format
 msgid ""
 "Invitation launched, thank you.<br>See you soon on <a href=\"%1$s\">%2$s</a>."
@@ -48,65 +48,75 @@ msgstr ""
 "Invitation lancée, merci.<br>À bientôt sur <a href=\"%1$s\">%2$s</a>."
 "<br><i>- Slackbot</i>"
 
-#: ../lazy-invitation.php:57
+#: ../lazy-invitation.php:85
 msgid "You are already in this team!"
 msgstr "Vous êtes déjà dans cette équipe !"
 
-#: ../lazy-invitation.php:61
+#: ../lazy-invitation.php:89
 msgid "You have already been invited in this team!"
 msgstr "Vous avez déjà été invité(e) dans cette équipe !"
 
-#: ../lazy-invitation.php:64 ../lazy-invitation.php:69
+#: ../lazy-invitation.php:92 ../lazy-invitation.php:97
 msgid "Unknow error."
 msgstr "Erreur inconnue."
 
-#: ../lazy-invitation.php:74
+#: ../lazy-invitation.php:102
 msgid "SlackBot Invitation"
 msgstr "Invitation par SlackBot"
 
-#: ../lazy-invitation.php:81
+#: ../lazy-invitation.php:109
 msgid "Email: "
 msgstr "E-mail : "
 
-#: ../lazy-invitation.php:81
+#: ../lazy-invitation.php:109
 msgid "Email address"
 msgstr "Adresse e-mail : "
 
-#: ../lazy-invitation.php:83
+#: ../lazy-invitation.php:111
 msgid "Get an invitation"
 msgstr "Obtenir une invitation"
 
-#: ../lazy-invitation.php:88
+#: ../lazy-invitation.php:116
 msgid "Ask for another invitation?"
 msgstr "Demander une autre invitation ?"
 
-#: ../lazy-invitation.php:118
+#: ../lazy-invitation.php:166
 msgid "General"
 msgstr "Général"
 
-#: ../lazy-invitation.php:119
+#: ../lazy-invitation.php:167
 msgid "GroupName?"
 msgstr "Nom du groupe ?"
 
-#: ../lazy-invitation.php:120
+#: ../lazy-invitation.php:168
 msgid "Token?"
 msgstr "Jeton ?"
 
-#: ../lazy-invitation.php:135
-msgid "Remember that your username will be used for the invitation mail."
+#: ../lazy-invitation.php:188
+msgid ""
+"<p>Remember that your username will be used for the invitation mail.</p>"
 msgstr ""
-"Souvenez vous que votre nom d'utilisateur sera utilisé dans le courrier "
-"d'invitation."
+"<p>Rappelez-vous que votre nom sera utilisé dans le courrier de l'invitation."
+"</p>"
 
-#: ../lazy-invitation.php:143
+#: ../lazy-invitation.php:189
+#, php-format
+msgid "<p>Here comes your %s to share!</p>"
+msgstr "<p>Voici votre %s à partager !</p>"
+
+#: ../lazy-invitation.php:189 ../lazy-invitation.php:238
+msgid "Invitation Page"
+msgstr "Page des invitations"
+
+#: ../lazy-invitation.php:202
 msgid "This is the name of your slack group."
 msgstr "C'est le nom de votre groupe Slack."
 
-#: ../lazy-invitation.php:153
+#: ../lazy-invitation.php:217
 msgid "This is the security token of your slack invitation group."
 msgstr "C'est le jeton de sécurité des invitations à votre groupe."
 
-#: ../lazy-invitation.php:157
+#: ../lazy-invitation.php:221
 msgid ""
 "To find your token you have to use the bookmarklet below (drag/drop in your "
 "brower toolbar) on your invitation page like <code>https://YOURGROUP.slack."
@@ -117,28 +127,33 @@ msgstr ""
 "des invitation de votre groupe, comme <code>https://MONGROUPE.slack.com/"
 "admin/invites</code>"
 
-#: ../lazy-invitation.php:159
+#: ../lazy-invitation.php:223
 msgid "Drag/drop me in our browser toolbar before!"
 msgstr "Glissez/déposez moi dans la barre d'outil du navigateur d'abord !"
 
-#: ../lazy-invitation.php:159
+#: ../lazy-invitation.php:223
 msgid "SlackInvit Token Api"
 msgstr "Jeton de l'API pour SlackInvit"
 
-#: ../lazy-invitation.php:161
+#: ../lazy-invitation.php:225
 msgid "Why do i have to do that?"
 msgstr "Pourquoi je dois faire ça ?"
 
-#: ../lazy-invitation.php:162
+#: ../lazy-invitation.php:226
 msgid ""
 "Because this is the only available token to auto invite people on your Slack."
 msgstr ""
 "Parce que c'est la seule façon possible de récupérer ce jeton pour auto "
 "inviter les gens sur votre Slack."
 
-#: ../lazy-invitation.php:169
+#: ../lazy-invitation.php:239
 msgid "Settings"
 msgstr "Réglages"
+
+#~ msgid "Remember that your username will be used for the invitation mail."
+#~ msgstr ""
+#~ "Souvenez vous que votre nom d'utilisateur sera utilisé dans le courrier "
+#~ "d'invitation."
 
 #~ msgid "Drag/drop me in our brower toolbar before!"
 #~ msgstr "Glissez/déposez moi"

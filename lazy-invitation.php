@@ -3,14 +3,14 @@
 Plugin Name: BAW Slack Lazy invitation
 Description: Slack Lazy Invitation lets you auto invite anyone on you Slack Group.
 Author: Julio Potier
-Author URI: http://boiteaweb.fr
+Author URI: http://wp-rocket.me
 Plugin URI: http://boiteaweb.fr/?p=8611
-Version: 1.0
+Version: 1.1
 Licence: GPLv2
 Domain: bawsi
 */
 
-define( 'BAWSI_VERSION', '1.0' );
+define( 'BAWSI_VERSION', '1.1' );
 
 /**
  * Load plugin textdomain.
@@ -45,6 +45,24 @@ function bawsi_do_invit() {
 		$message .= '</p>';
 	}
 	if ( ! empty( $_POST['email'] ) && is_email( $_POST['email'] ) ) {
+		if ( class_exists( 'ReCAPTCHAPlugin' ) ) {
+			$recaptcha = new ReCAPTCHAPlugin('recaptcha_options');
+			$errors = new WP_Error();
+			$errors = $recaptcha->validate_recaptcha_response( $errors );
+			if ( count( $errors->errors ) ) {
+				wp_die( 'Captcha Error' );
+			}
+		} elseif ( function_exists( 'gglcptch_login_check' ) ) {
+			global $gglcptch_options;
+			$privatekey = $gglcptch_options['private_key'];
+			require_once( WP_PLUGIN_DIR . '/google-captcha/lib_v2/recaptchalib.php' );
+			$reCaptcha = new ReCaptcha( $privatekey );
+			$gglcptch_g_recaptcha_response = isset( $_POST["g-recaptcha-response"] ) ? $_POST["g-recaptcha-response"] : '';
+			$resp = $reCaptcha->verifyResponse( $_SERVER["REMOTE_ADDR"], $gglcptch_g_recaptcha_response );
+			if ( $resp != null && ! $resp->success ) {
+				wp_die( 'Captcha Error' );
+			}
+		}
 		$data = array( 
 			'email' => $_POST['email'], 
 			'channels' => '',
@@ -76,7 +94,7 @@ function bawsi_do_invit() {
 				}
 			}
 		} else {
-			$message = $dom . _( 'Unknow error.', 'bawsi' );
+			$message = $dom . __( 'Unknow error.', 'bawsi' );
 		}
 		$message .= '</p>';
 	}
@@ -89,7 +107,7 @@ function bawsi_do_invit() {
 		</style>
 		<form action="" method="post">
 			<p><?php _e( 'Email: ', 'bawsi' ); ?><input type="text" name="email" value="" title="<?php esc_attr_e( 'Email address', 'bawsi' ); ?>" /></p>
-			<?php do_action( 'slack-invitation-before-submit' ); ?>
+			<?php do_action( 'slack-invitation-before-submit', '' ); ?>
 			<p><input type="submit" value="<?php esc_attr_e( 'Get an invitation', 'bawsi' ); ?>" name="submit" id="submit" class="button button-primary"/></p>
 		</form>
 	<?php
@@ -167,7 +185,8 @@ function slackinvit_settings_page() {
 * @since 1.0
 */
 function bawsi_info() {
-	_e( 'Remember that your username will be used for the invitation mail.', 'bawsi' ); 
+	_e( '<p>Remember that your username will be used for the invitation mail.</p>', 'bawsi' );
+	printf( __( '<p>Here comes your %s to share!</p>', '' ), '<a href="' . site_url( 'wp-login.php?action=slack-invitation' ) . '">' . __( 'Invitation Page', 'bawsi' ) . '</a>' );
 }
 
 /*
@@ -216,6 +235,7 @@ function bawsi_field_token() {
 */
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'bawsi_settings_action_links' );
 function bawsi_settings_action_links( $links ) {
+	array_unshift( $links, '<a href="' . site_url( 'wp-login.php?action=slack-invitation' ) . '">' . __( 'Invitation Page', 'bawsi' ) . '</a>' );
 	array_unshift( $links, '<a href="' . admin_url( 'options-general.php?page=slackinvit_settings' ) . '">' . __( 'Settings' ) . '</a>' );
 	return $links;
 }
@@ -229,4 +249,15 @@ add_filter( 'sfml_additional_slugs', 'bawsi_slackinvit_slug' );
 function bawsi_slackinvit_slug( $slugs ) {
 	$slugs['slack-invitation'] = 'SlackInvit';
 	return $slugs;
+}
+
+
+add_action( 'slack-invitation-before-submit', 'bawsi_captcha_support', 9 );
+function bawsi_captcha_support() {
+	if ( class_exists( 'ReCAPTCHAPlugin' ) ) {
+		$recaptcha = new ReCAPTCHAPlugin( 'recaptcha_options' );
+		echo '<p>' . $recaptcha->get_recaptcha_html() . '</p>';
+	} elseif( function_exists( 'gglcptch_display' ) ) {
+		echo '<p>' . gglcptch_display() . '</p>';
+	}
 }
