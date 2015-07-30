@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: BAW Slack Lazy invitation
-Description: Slack Lazy Invitation lets you auto invite anyone on you Slack Group.
+Description: Slack Lazy Invitation lets you auto invite anyone to your Slack Group.
 Author: Julio Potier
 Author URI: http://wp-rocket.me
 Plugin URI: http://boiteaweb.fr/?p=8611

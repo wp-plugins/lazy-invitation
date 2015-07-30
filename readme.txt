@@ -7,11 +7,11 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Slack Lazy Invitation lets you auto invite anyone on you Slack Group.
+Slack Lazy Invitation lets you auto invite anyone to your Slack Group.
 
 == Description ==
 
-Slack Lazy Invitation lets you auto invite anyone on you Slack Group without adding each member each time they want to be invited. Boring.
+Slack Lazy Invitation lets you auto invite anyone to your Slack Group without adding each member each time they want to be invited. Boring.
 
 Invitation page be like example.com/wp-login.php?action=slack-invitation
 
