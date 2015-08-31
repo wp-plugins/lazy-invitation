@@ -5,12 +5,12 @@ Description: Slack Lazy Invitation lets you auto invite anyone to your Slack Gro
 Author: Julio Potier
 Author URI: http://wp-rocket.me
 Plugin URI: http://boiteaweb.fr/?p=8611
-Version: 1.1
+Version: 1.2
 Licence: GPLv2
 Domain: bawsi
 */
 
-define( 'BAWSI_VERSION', '1.1' );
+define( 'BAWSI_VERSION', '1.2' );
 
 /**
  * Load plugin textdomain.
@@ -25,6 +25,7 @@ function bawsi_load_textdomain() {
 /*
 * Prints the form, do the request or print messages
 *
+* @since 1.1 Support recaptcha lib v2 and v1
 * @since 1.0
 */
 add_action( 'login_form_slack-invitation', 'bawsi_do_invit' );
@@ -55,12 +56,27 @@ function bawsi_do_invit() {
 		} elseif ( function_exists( 'gglcptch_login_check' ) ) {
 			global $gglcptch_options;
 			$privatekey = $gglcptch_options['private_key'];
-			require_once( WP_PLUGIN_DIR . '/google-captcha/lib_v2/recaptchalib.php' );
-			$reCaptcha = new ReCaptcha( $privatekey );
-			$gglcptch_g_recaptcha_response = isset( $_POST["g-recaptcha-response"] ) ? $_POST["g-recaptcha-response"] : '';
-			$resp = $reCaptcha->verifyResponse( $_SERVER["REMOTE_ADDR"], $gglcptch_g_recaptcha_response );
-			if ( $resp != null && ! $resp->success ) {
-				wp_die( 'Captcha Error' );
+			$resp = null;
+			if ( 'v2' == $gglcptch_options['recaptcha_version'] ) {
+				require_once( WP_PLUGIN_DIR . '/google-captcha/lib_v2/recaptchalib.php' );
+				if ( class_exists( 'ReCaptcha' ) ) {
+					$reCaptcha = new ReCaptcha( $privatekey );
+					$gglcptch_g_recaptcha_response = isset( $_POST["g-recaptcha-response"] ) ? $_POST["g-recaptcha-response"] : '';
+					$resp = $reCaptcha->verifyResponse( $_SERVER["REMOTE_ADDR"], $gglcptch_g_recaptcha_response );
+				}
+				if ( $resp != null && ! $resp->success ) {
+					wp_die( 'Captcha Error' );
+				}
+			} else {
+				require_once( WP_PLUGIN_DIR . '/google-captcha/lib/recaptchalib.php' );
+				if ( function_exists( 'gglcptch_recaptcha_check_answer' ) ) {
+					$gglcptch_recaptcha_challenge_field = isset( $_POST['recaptcha_challenge_field'] ) ? $_POST['recaptcha_challenge_field'] : '';
+					$gglcptch_recaptcha_response_field = isset( $_POST['recaptcha_response_field'] ) ? $_POST['recaptcha_response_field'] : '';
+					$resp = gglcptch_recaptcha_check_answer( $privatekey, $_SERVER['REMOTE_ADDR'], $gglcptch_recaptcha_challenge_field, $gglcptch_recaptcha_response_field );
+				}
+				if ( $resp != null && ! $resp->is_valid ) {
+					wp_die( 'Captcha Error' );
+				}
 			}
 		}
 		$data = array( 
@@ -72,7 +88,8 @@ function bawsi_do_invit() {
 			'_attempts' => '1',
 		);
 		$slack_url = esc_url( 'https://' . $bawsi_options['groupname'] .'.slack.com' );
-		$dom = '<p class="message" style="min-height:64px"><img src="https://slack-assets2.s3-us-west-2.amazonaws.com/10068/img/slackbot_192.png" style="float:left;height:64px;width=64px" heigt="64" width="64"> ';
+		$default_slack_avatar = apply_filters( 'slack-invitation-default-avatar', 'https://slack-assets2.s3-us-west-2.amazonaws.com/10068/img/slackbot_192.png' );
+		$dom = '<p class="message" style="min-height:64px"><img src="' . $default_slack_avatar . '" style="float:left;height:64px;width=64px" heigt="64" width="64"> ';
 		$response = wp_remote_post( $slack_url . '/api/users.admin.invite?t=1', array( 'body' => $data ) );
 		if( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
 			$return = json_decode( wp_remote_retrieve_body( $response ) );
@@ -87,14 +104,17 @@ function bawsi_do_invit() {
 					case 'already_invited' :
 					case 'sent_recently' :
 						$message = $dom . __( 'You have already been invited in this team!', 'bawsi' );
+					break;					
+					case 'invalid_auth' :
+						$message = $dom . __( 'The Slack Invit Token API is not correct, please tell the webmaster!', 'bawsi' );
 					break;
 					default:
-						$message = $dom . _( 'Unknow error.', 'bawsi' );
+						$message = $dom . sprintf( __( 'Unknow error: %s', 'bawsi' ), esc_html( $return->error ) );
 					break;
 				}
 			}
 		} else {
-			$message = $dom . __( 'Unknow error.', 'bawsi' );
+			$message = $dom . sprintf( __( 'Unknow error: %s', 'bawsi' ), wp_remote_retrieve_response_code( $response ) );
 		}
 		$message .= '</p>';
 	}
@@ -107,7 +127,7 @@ function bawsi_do_invit() {
 		</style>
 		<form action="" method="post">
 			<p><?php _e( 'Email: ', 'bawsi' ); ?><input type="text" name="email" value="" title="<?php esc_attr_e( 'Email address', 'bawsi' ); ?>" /></p>
-			<?php do_action( 'slack-invitation-before-submit', '' ); ?>
+			<?php do_action( 'slack-invitation-before-submit' ); ?>
 			<p><input type="submit" value="<?php esc_attr_e( 'Get an invitation', 'bawsi' ); ?>" name="submit" id="submit" class="button button-primary"/></p>
 		</form>
 	<?php

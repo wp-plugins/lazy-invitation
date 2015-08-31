@@ -46,6 +46,12 @@ If you're running another captcha plugin, tell me, i'll add it.
 
 == Changelog ==
 
+= 1.2 =
+* 01 sept 2015
+* Support reCaptcha v1 and v2
+* New hook 'slack-invitation-default-avatar' to filter the slackbot avatar
+* Fix bug using _() instead of __()
+
 = 1.1 =
 * 28 july 2015
 * Add 2 links to find the invitation page, props @pollyplummer
