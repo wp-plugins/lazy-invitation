@@ -40,11 +40,19 @@ If you're running another captcha plugin, tell me, i'll add it.
 
 == Screenshots ==
 
-1. Invitation Screen
-1. Invitation Sent
-1. Settings
+1. Invitation Screen (=1 team)
+1. Invitation Screen (>1 team)
+1. Invitation Sent (default)
+1. Invitation Sent (and customized)
+1. Settings (these are fake tokens ;p)
 
 == Changelog ==
+
+= 1.3 =
+* 29 sept 2015
+* Support multi slacks teams
+* New hook 'slack-invitation-default-botname' to filter the slackbot name
+* Both 'slack-invitation-default-botname' and 'slack-invitation-default-avatar' got a new param "group" to filter it depending on the selected group, see screenshots
 
 = 1.2 =
 * 01 sept 2015
